@@ -1,5 +1,14 @@
 # Mini REDIS challenge
 
+Redis is an in-memory NoSQL data store that supports operations or “commands” on data structures
+such as sets, lists and hashes. Your objective is to implement a service that supports a subset of the
+Redis command set. That is, you are to build a “mini redis”.
+
+This has two parts -- first, the implementation of Redis commands and the underlying data structure to
+support them, and second (optional part), support for calling this “mini redis” over the network.
+As you work on this challenge, try to complete the first part in its entirety before moving on to the
+optional part.
+
 Java implementation of the following REDIS commands:
 
 1. SET key value
