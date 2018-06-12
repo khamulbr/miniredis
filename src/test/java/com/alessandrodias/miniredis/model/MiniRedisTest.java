@@ -47,6 +47,7 @@ public class MiniRedisTest {
         assertEquals(MiniRedis.NIL, miniRedis.get("key"));
     }
 
+
     @Test
     public void testShouldDeleteOneKey() {
         database.put("key", "value");
@@ -84,6 +85,16 @@ public class MiniRedisTest {
     public void testShouldIncrementNonExistingNumericKey(){
         assertEquals(1, miniRedis.incr("key"));
     }
+
+    @Test(expected = NumberFormatException.class)
+    public void testShouldThrowExceptionWhenIncrOfNonIntKeyIsCalled() {
+        database.put("key", "a");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+
+        miniRedis.incr("key");
+    }
+
+
 
 
 

@@ -12,7 +12,7 @@ public class MiniRedis {
 
     public static final Long NIL = null;
 
-    private ConcurrentHashMap<String, String> database = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, Object> database = new ConcurrentHashMap();
 
     public int dbSize() {
         return database.size();
@@ -28,7 +28,16 @@ public class MiniRedis {
     }
 
     public String get(String key) {
-        return this.database.get(key);
+        Object value = database.get(key);
+        if (value != null) {
+            if (value instanceof String) {
+                return (String) value;
+            } else {
+                throw new RuntimeException("Invalid String");
+            }
+        } else
+            return null;
+
     }
 
     public int del(String... keys) {
