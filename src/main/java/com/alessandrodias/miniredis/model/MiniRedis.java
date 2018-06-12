@@ -1,8 +1,10 @@
 package com.alessandrodias.miniredis.model;
 
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class MiniRedis {
@@ -20,18 +22,34 @@ public class MiniRedis {
         this.database = database;
     }
 
-    public void set(String key, String value) {
+    public String set(String key, String value) {
         this.database.put(key, value);
+        return "OK";
     }
 
     public String get(String key) {
         return this.database.get(key);
     }
 
-    public int delete(String... keys) {
+    public int del(String... keys) {
         Set mySet = new HashSet(Arrays.asList(keys));
         int deletedKeys = database.entrySet().stream().filter(p->mySet.contains(p.getKey())).collect(Collectors.toList()).size();
         database.keySet().removeAll(mySet);
         return deletedKeys;
+    }
+
+    public int incr(String key) {
+        Integer valueToIncrement = 0;
+        String value = get(key);
+        if (value != null) {
+            if (StringUtils.isNumeric(value)) {
+                valueToIncrement = Integer.parseInt(value);
+            } else {
+                throw new NumberFormatException("(error) ERR value is not an integer or out of range");
+            }
+        }
+        valueToIncrement++;
+        set(key, String.valueOf(valueToIncrement));
+        return valueToIncrement;
     }
 }

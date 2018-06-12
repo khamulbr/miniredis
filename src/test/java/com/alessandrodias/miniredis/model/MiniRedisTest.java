@@ -16,7 +16,6 @@ public class MiniRedisTest {
     @Before
     public void setUp() {
         miniRedis = MiniRedisFixture.get().build();
-        database.put("test", "test");
     }
 
     @Test
@@ -26,19 +25,20 @@ public class MiniRedisTest {
 
     @Test
     public void testReturnProperSizeWhenIsNotEmpty() {
-        MiniRedis miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+        database.put("key", "value");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
         assertEquals(1, miniRedis.dbSize());
     }
 
     @Test
     public void testShouldReturnProperSizeWhenAKeyIsSet() {
-        miniRedis.set("key", "value");
-        assertEquals(1, miniRedis.dbSize());
+        assertEquals("OK", miniRedis.set("key", "value"));
     }
 
     @Test
     public void testShouldReturnProperValueWhenAKeyIsGet() {
-        miniRedis.set("key", "value");
+        database.put("key", "value");
+        MiniRedis miniRedis = MiniRedisFixture.get().withDatabase(database).build();
         assertEquals("value", miniRedis.get("key"));
     }
 
@@ -49,22 +49,40 @@ public class MiniRedisTest {
 
     @Test
     public void testShouldDeleteOneKey() {
-        miniRedis.set("key", "value");
-        assertEquals(1, miniRedis.delete("key"));
+        database.put("key", "value");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+        assertEquals(1, miniRedis.del("key"));
     }
 
     @Test
     public void testShouldDeleteTwoKeys() {
-        miniRedis.set("key", "value");
-        miniRedis.set("key1", "value1");
-        assertEquals(2, miniRedis.delete("key", "key1"));
+        database.put("key", "value");
+        database.put("key1", "value1");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+
+        assertEquals(2, miniRedis.del("key", "key1"));
     }
 
     @Test
     public void testShouldDeleteTwoKeysAndIgnoreOneNonExistentKey() {
-        miniRedis.set("key", "value");
-        miniRedis.set("key1", "value1");
-        assertEquals(2, miniRedis.delete("key", "key1", "key2"));
+        database.put("key", "value");
+        database.put("key1", "value1");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+
+        assertEquals(2, miniRedis.del("key", "key1", "key2"));
+    }
+
+    @Test
+    public void testShouldIncrementExistingNumericKey(){
+        database.put("key", "1");
+        miniRedis = MiniRedisFixture.get().withDatabase(database).build();
+
+        assertEquals(2, miniRedis.incr("key"));
+    }
+
+    @Test
+    public void testShouldIncrementNonExistingNumericKey(){
+        assertEquals(1, miniRedis.incr("key"));
     }
 
 
