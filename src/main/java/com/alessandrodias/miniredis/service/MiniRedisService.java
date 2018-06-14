@@ -1,4 +1,4 @@
-package com.alessandrodias.miniredis.model;
+package com.alessandrodias.miniredis.service;
 
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class MiniRedis {
+public class MiniRedisService {
 
 
     public static final Long NIL = null;
