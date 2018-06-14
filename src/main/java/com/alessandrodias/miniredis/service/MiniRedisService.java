@@ -13,6 +13,7 @@ public class MiniRedisService {
     public static final Long NIL = null;
 
     private ConcurrentHashMap<String, Object> database = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, Date> databaseExpiration = new ConcurrentHashMap();
 
     public int dbSize() {
         return database.size();
@@ -22,22 +23,44 @@ public class MiniRedisService {
         this.database = database;
     }
 
+    public void setDatabaseExpiration(ConcurrentHashMap databaseExpiration) {
+        this.databaseExpiration = databaseExpiration;
+    }
+
     public String set(String key, String value) {
         this.database.put(key, value);
         return "OK";
     }
 
+
+    public String set(String key, String value, Integer seconds) {
+        this.databaseExpiration.put(key, setExpirationTime(seconds));
+        this.set(key, value);
+        return "OK";
+    }
+
+    private Date setExpirationTime(Integer seconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, seconds);
+        return calendar.getTime();
+    }
+
+    private Date getCurrent() {
+        return Calendar.getInstance().getTime();
+    }
+
     public String get(String key) {
         Object value = database.get(key);
-        if (value != null) {
-            if (value instanceof String) {
-                return (String) value;
-            } else {
-                throw new RuntimeException("Invalid String");
+        if (databaseExpiration.get(key) == null || (!databaseExpiration.get(key).after(getCurrent()))) {
+            if (value != null) {
+                if (value instanceof String) {
+                    return (String) value;
+                } else {
+                    throw new RuntimeException("Invalid String");
+                }
             }
-        } else
-            return null;
-
+        }
+       return null;
     }
 
     public int del(String... keys) {
@@ -61,4 +84,5 @@ public class MiniRedisService {
         set(key, String.valueOf(valueToIncrement));
         return valueToIncrement;
     }
+
 }

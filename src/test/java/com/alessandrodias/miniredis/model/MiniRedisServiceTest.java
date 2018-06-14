@@ -5,6 +5,7 @@ import com.alessandrodias.miniredis.service.MiniRedisService;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -13,10 +14,13 @@ public class MiniRedisServiceTest {
 
     private MiniRedisService miniRedisService;
     private ConcurrentHashMap database = new ConcurrentHashMap();
+    private ConcurrentHashMap databaseExpiration = new ConcurrentHashMap();
+    private Calendar calendar;
 
     @Before
     public void setUp() {
         miniRedisService = MiniRedisServiceFixture.get().build();
+        calendar = Calendar.getInstance();
     }
 
     @Test
@@ -95,7 +99,25 @@ public class MiniRedisServiceTest {
         miniRedisService.incr("key");
     }
 
+    @Test
+    public void testShouldCreateAExpirableKeyAndGetValueWithinTime() throws InterruptedException {
+        database.put("key", "a");
+        calendar.add(Calendar.SECOND, 1);
+        databaseExpiration.put("key", calendar.getTime());
+        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).withExpiration(databaseExpiration).build();
 
+        Thread.sleep(500);
+        assertEquals("a", miniRedisService.get("key"));
+    }
+
+    public void testShouldCreateAExpirableKeyAndGetNilAsExpireTimeHasPassed() throws InterruptedException {
+        database.put("key", "a");
+        databaseExpiration.put("key", 1);
+        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).withExpiration(databaseExpiration).build();
+
+        Thread.sleep(1500);
+        assertEquals("a", miniRedisService.get("key"));
+    }
 
 
 
