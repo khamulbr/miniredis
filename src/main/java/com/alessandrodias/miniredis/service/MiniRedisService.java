@@ -3,7 +3,10 @@ package com.alessandrodias.miniredis.service;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -13,7 +16,7 @@ public class MiniRedisService {
     public static final Long NIL = null;
 
     private ConcurrentHashMap<String, Object> database = new ConcurrentHashMap();
-    private ConcurrentHashMap<String, Date> databaseExpiration = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, Long> databaseExpiration = new ConcurrentHashMap();
 
     public int dbSize() {
         return database.size();
@@ -34,24 +37,27 @@ public class MiniRedisService {
 
 
     public String set(String key, String value, Integer seconds) {
+        if (seconds < 1)
+            throw new RuntimeException("(error) ERR invalid expire time in set");
+
         this.databaseExpiration.put(key, setExpirationTime(seconds));
         this.set(key, value);
         return "OK";
     }
 
-    private Date setExpirationTime(Integer seconds) {
+    private Long setExpirationTime(Integer seconds) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, seconds);
-        return calendar.getTime();
+        return calendar.getTimeInMillis();
     }
 
-    private Date getCurrent() {
-        return Calendar.getInstance().getTime();
+    private Long getCurrentTime() {
+        return Calendar.getInstance().getTimeInMillis();
     }
 
     public String get(String key) {
         Object value = database.get(key);
-        if (databaseExpiration.get(key) == null || (!databaseExpiration.get(key).after(getCurrent()))) {
+        if (databaseExpiration.get(key) == null || (getCurrentTime().compareTo(databaseExpiration.get(key)) == -1)) {
             if (value != null) {
                 if (value instanceof String) {
                     return (String) value;

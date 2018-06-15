@@ -101,22 +101,23 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldCreateAExpirableKeyAndGetValueWithinTime() throws InterruptedException {
-        database.put("key", "a");
-        calendar.add(Calendar.SECOND, 1);
-        databaseExpiration.put("key", calendar.getTime());
-        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).withExpiration(databaseExpiration).build();
+        miniRedisService.set("key", "a", 1);
 
         Thread.sleep(500);
         assertEquals("a", miniRedisService.get("key"));
     }
 
+    @Test
     public void testShouldCreateAExpirableKeyAndGetNilAsExpireTimeHasPassed() throws InterruptedException {
-        database.put("key", "a");
-        databaseExpiration.put("key", 1);
-        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).withExpiration(databaseExpiration).build();
+        miniRedisService.set("key", "a", 1);
 
         Thread.sleep(1500);
-        assertEquals("a", miniRedisService.get("key"));
+        assertEquals(MiniRedisService.NIL, miniRedisService.get("key"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testShouldNotCreateAExpirableKeyWhenExpirationIsZero() throws InterruptedException {
+        miniRedisService.set("key", "a", 0);
     }
 
 
