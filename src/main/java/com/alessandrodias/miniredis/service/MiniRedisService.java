@@ -1,6 +1,9 @@
 package com.alessandrodias.miniredis.service;
 
 
+import com.alessandrodias.miniredis.model.MiniRedisData;
+import com.alessandrodias.miniredis.model.MiniRedisDataOrderedSet;
+import com.alessandrodias.miniredis.model.MiniRedisDataSet;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -15,8 +18,7 @@ public class MiniRedisService {
 
     public static final Long NIL = null;
 
-    private ConcurrentHashMap<String, Object> database = new ConcurrentHashMap();
-    private ConcurrentHashMap<String, Long> databaseExpiration = new ConcurrentHashMap();
+    private ConcurrentHashMap<String, MiniRedisData> database = new ConcurrentHashMap();
 
     public int dbSize() {
         return database.size();
@@ -26,44 +28,33 @@ public class MiniRedisService {
         this.database = database;
     }
 
-    public void setDatabaseExpiration(ConcurrentHashMap databaseExpiration) {
-        this.databaseExpiration = databaseExpiration;
-    }
 
     public String set(String key, String value) {
-        this.database.put(key, value);
+        this.database.put(key, new MiniRedisDataSet(value));
         return "OK";
     }
 
 
-    public String set(String key, String value, Integer seconds) {
-        if (seconds < 1)
+    public String set(String key, String value, Integer secondsToExpire) {
+        if (secondsToExpire < 1)
             throw new RuntimeException("(error) ERR invalid expire time in set");
 
-        this.databaseExpiration.put(key, setExpirationTime(seconds));
-        this.set(key, value);
+        this.database.put(key, new MiniRedisDataSet(value, secondsToExpire));
         return "OK";
     }
-
-    private Long setExpirationTime(Integer seconds) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, seconds);
-        return calendar.getTimeInMillis();
-    }
+    
 
     private Long getCurrentTime() {
         return Calendar.getInstance().getTimeInMillis();
     }
 
     public String get(String key) {
-        Object value = database.get(key);
-        if (databaseExpiration.get(key) == null || (getCurrentTime().compareTo(databaseExpiration.get(key)) == -1)) {
-            if (value != null) {
-                if (value instanceof String) {
-                    return (String) value;
-                } else {
-                    throw new RuntimeException("Invalid String");
-                }
+        MiniRedisDataSet miniRedisData = (MiniRedisDataSet) database.get(key);
+        if (miniRedisData != null) {
+            System.out.println("expiration from db = " + miniRedisData.getExpiration());
+            System.out.println("time               = " + getCurrentTime());
+            if (!miniRedisData.isExpired()) {
+                return miniRedisData.getValue();
             }
         }
        return null;
@@ -89,6 +80,10 @@ public class MiniRedisService {
         valueToIncrement++;
         set(key, String.valueOf(valueToIncrement));
         return valueToIncrement;
+    }
+
+    public void zadd(String key, Double score, String value) {
+        database.put(key, new MiniRedisDataOrderedSet(score, value));
     }
 
 }

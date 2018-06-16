@@ -42,7 +42,7 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldReturnProperValueWhenAKeyIsGet() {
-        database.put("key", "value");
+        database.put("key", new MiniRedisDataSet("value"));
         MiniRedisService miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
         assertEquals("value", miniRedisService.get("key"));
     }
@@ -55,15 +55,15 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldDeleteOneKey() {
-        database.put("key", "value");
+        database.put("key", new MiniRedisDataSet("value"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
         assertEquals(1, miniRedisService.del("key"));
     }
 
     @Test
     public void testShouldDeleteTwoKeys() {
-        database.put("key", "value");
-        database.put("key1", "value1");
+        database.put("key", new MiniRedisDataSet("value"));
+        database.put("key1", new MiniRedisDataSet("value1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.del("key", "key1"));
@@ -71,8 +71,8 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldDeleteTwoKeysAndIgnoreOneNonExistentKey() {
-        database.put("key", "value");
-        database.put("key1", "value1");
+        database.put("key", new MiniRedisDataSet("value"));
+        database.put("key1", new MiniRedisDataSet("value1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.del("key", "key1", "key2"));
@@ -80,7 +80,7 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldIncrementExistingNumericKey(){
-        database.put("key", "1");
+        database.put("key", new MiniRedisDataSet("1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.incr("key"));
@@ -93,7 +93,7 @@ public class MiniRedisServiceTest {
 
     @Test(expected = NumberFormatException.class)
     public void testShouldThrowExceptionWhenIncrOfNonIntKeyIsCalled() {
-        database.put("key", "a");
+        database.put("key", new MiniRedisDataSet("a"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         miniRedisService.incr("key");

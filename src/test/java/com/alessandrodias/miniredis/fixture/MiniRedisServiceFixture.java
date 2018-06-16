@@ -24,9 +24,4 @@ public class MiniRedisServiceFixture {
         miniRedisService.setDatabase(database);
         return this;
     }
-
-    public MiniRedisServiceFixture withExpiration(ConcurrentHashMap databaseExpiration) {
-        miniRedisService.setDatabaseExpiration(databaseExpiration);
-        return this;
-    }
 }
