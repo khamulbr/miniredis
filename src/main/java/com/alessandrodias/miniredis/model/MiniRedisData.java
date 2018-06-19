@@ -6,17 +6,11 @@ public class MiniRedisData {
 
     private Long expiration;
 
+    public MiniRedisData() {
+    }
+
     public MiniRedisData(Integer seconds) {
         this.expiration = calculateExpiration(seconds);
-    }
-
-    private Long calculateExpiration(Integer seconds) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, seconds);
-        return calendar.getTimeInMillis();
-    }
-
-    public MiniRedisData() {
     }
 
     public Long getExpiration() {
@@ -31,5 +25,11 @@ public class MiniRedisData {
         if (getExpiration() != null)
             return (Calendar.getInstance().getTimeInMillis() > getExpiration());
         return false;
+    }
+
+    private Long calculateExpiration(Integer seconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, seconds);
+        return calendar.getTimeInMillis();
     }
 }

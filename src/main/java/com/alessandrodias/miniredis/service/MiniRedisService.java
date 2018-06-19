@@ -2,7 +2,7 @@ package com.alessandrodias.miniredis.service;
 
 
 import com.alessandrodias.miniredis.model.MiniRedisData;
-import com.alessandrodias.miniredis.model.MiniRedisDataOrderedSet;
+import com.alessandrodias.miniredis.model.MiniRedisDataSortedSet;
 import com.alessandrodias.miniredis.model.MiniRedisDataSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -83,7 +83,7 @@ public class MiniRedisService {
     }
 
     public void zadd(String key, Double score, String value) {
-        database.put(key, new MiniRedisDataOrderedSet(score, value));
+        database.put(key, new MiniRedisDataSortedSet(score, value));
     }
 
 }

@@ -1,11 +1,11 @@
 package com.alessandrodias.miniredis.model;
 
-public class MiniRedisDataOrderedSet extends MiniRedisData{
+public class MiniRedisDataSortedSet extends MiniRedisData{
 
     private Double score;
     private String value;
 
-    public MiniRedisDataOrderedSet(Double score, String value) {
+    public MiniRedisDataSortedSet(Double score, String value) {
         this.score = score;
         this.value = value;
     }
