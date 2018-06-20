@@ -4,6 +4,7 @@ package com.alessandrodias.miniredis.service;
 import com.alessandrodias.miniredis.model.MiniRedisData;
 import com.alessandrodias.miniredis.model.MiniRedisDataOrderedSet;
 import com.alessandrodias.miniredis.model.MiniRedisString;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -79,6 +80,7 @@ public class MiniRedisService {
 
     private MiniRedisDataOrderedSet getMiniRedisDataOrderedSetFromDatabaseKey(String key) {
         return (MiniRedisDataOrderedSet) database.get(key);
+
     }
 
     public int zadd(String key, Double score, String value) {
