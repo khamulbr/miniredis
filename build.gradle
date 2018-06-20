@@ -1,11 +1,21 @@
-plugins {
-    // Apply the java plugin to add support for Java
-    id 'java'
-
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
+    }
 }
 
+apply plugin: 'java'
 apply plugin: "idea"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
+jar {
+    baseName = 'miniredis-service'
+    version =  '0.1.0'
+}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -18,8 +28,13 @@ dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     compile 'com.google.guava:guava:23.0'
     compile 'org.apache.commons:commons-lang3:3.7'
-    testCompile group: 'net.jodah', name: 'concurrentunit', version: '0.4.3'
+    compile 'org.springframework.boot:spring-boot-starter-web'
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+    // concurrency junit test plugin
+    testCompile group: 'net.jodah', name: 'concurrentunit', version: '0.4.3'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+
 }

@@ -10,6 +10,7 @@ public enum MiniRedisCommand {
     ZCARD("ZCARD"),
     ZRANK("ZRANK"),
     ZRANGE("ZRANGE"),
+    HELP("HELP"),
     EXIT("EXIT");
 
     private String command;

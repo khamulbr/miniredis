@@ -1,9 +1,11 @@
 package com.alessandrodias.miniredis.app;
 
-import com.alessandrodias.miniredis.model.MiniRedisCommand;
 import com.alessandrodias.miniredis.model.MiniRedisInstruction;
+import com.alessandrodias.miniredis.model.MiniRedisDatabase;
 
 import java.util.Scanner;
+
+import static com.alessandrodias.miniredis.model.MiniRedisCommand.EXIT;
 
 public class MiniRedisCLI {
 
@@ -12,6 +14,12 @@ public class MiniRedisCLI {
     static final int ERROR_CODE_BAD_ARGUMENTS   = 1;
 
     private String errorMessage;
+
+    private MiniRedisDatabase miniRedisDatabase;
+
+    public MiniRedisCLI() {
+        this.miniRedisDatabase = new MiniRedisDatabase();
+    }
 
     public static void main(String... args) {
         MiniRedisCLI miniRedisCLI = new MiniRedisCLI();
@@ -42,13 +50,40 @@ public class MiniRedisCLI {
     private void loop() {
         sayHello();
         Scanner keyboard = new Scanner(System.in);
-        String commandParsed;
+        MiniRedisInstruction instructionParsed;
         do {
             System.out.print("> ");
             String instructionReceived = keyboard.next();
-            commandParsed = parseInstruction(instructionReceived).getCommand();
-        } while (!(commandParsed.toUpperCase()).equals(MiniRedisCommand.EXIT.getCommand()));
+            instructionParsed = parseInstruction(instructionReceived);
+            executeCommand(instructionParsed);
+        } while (!(instructionParsed.getMiniRedisCommand().getCommand().toUpperCase()).equals(EXIT.getCommand()));
         sayGoodbye();
+    }
+
+    private void executeCommand(MiniRedisInstruction miniRedisInstruction) {
+        switch (miniRedisInstruction.getMiniRedisCommand()) {
+            case SET:
+                miniRedisDatabase.set("x", "1");
+                break;
+            case GET:
+                break;
+            case DEL:
+                break;
+            case DBSIZE:
+                break;
+            case INCR:
+                break;
+            case ZADD:
+                break;
+            case ZCARD:
+                break;
+            case ZRANK:
+                break;
+            case ZRANGE:
+                break;
+            case EXIT:
+                break;
+        }
     }
 
     private MiniRedisInstruction parseInstruction(String instructionReceived) {

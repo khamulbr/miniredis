@@ -26,15 +26,15 @@ public class MiniRedisCLITest {
         miniRedisCLI = new MiniRedisCLI();
     }
 
-    @Test
-    public void testShouldShowUsageWhenAnyNumberOfArgumentsIsSupplied() {
-        miniRedisCLI.execute("a", "b", "c");
-        assertAbort(MiniRedisCLI.MSG_TOO_MANY_ARGUMENTS);
-    }
-
-    private void assertAbort(String expectedMessage) {
-        assertEquals(expectedMessage + EOL + MiniRedisCLI.USAGE + EOL,
-                consoleText.toString());
-        assertEquals(MiniRedisCLI.ERROR_CODE_BAD_ARGUMENTS, errorCode);
-    }
+//    @Test
+//    public void testShouldShowUsageWhenAnyNumberOfArgumentsIsSupplied() {
+//        miniRedisCLI.execute("a", "b", "c");
+//        assertAbort(MiniRedisCLI.MSG_TOO_MANY_ARGUMENTS);
+//    }
+//
+//    private void assertAbort(String expectedMessage) {
+//        assertEquals(expectedMessage + EOL + MiniRedisCLI.USAGE + EOL,
+//                consoleText.toString());
+//        assertEquals(MiniRedisCLI.ERROR_CODE_BAD_ARGUMENTS, errorCode);
+//    }
 }
