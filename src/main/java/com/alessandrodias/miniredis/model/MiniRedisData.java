@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 public class MiniRedisData {
 
+    public static final Long NIL = null;
+
     private Long expiration;
 
     public MiniRedisData(Integer seconds) {

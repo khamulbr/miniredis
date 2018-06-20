@@ -1,29 +1,43 @@
 package com.alessandrodias.miniredis.model;
 
-public class MiniRedisDataOrderedSet extends MiniRedisData{
+import java.util.List;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.stream.Collectors;
 
-    private Double score;
-    private String value;
+public class MiniRedisDataOrderedSet extends MiniRedisData {
 
-    public MiniRedisDataOrderedSet(Double score, String value) {
-        this.score = score;
-        this.value = value;
+    private ConcurrentSkipListMap<Double, String> scoredMembers = new ConcurrentSkipListMap<>();
+
+    public MiniRedisDataOrderedSet() {
     }
 
-    public Double getScore() {
-        return score;
+    public int putScoredMember(Double score, String value) {
+        if (!scoredMembers.containsValue(value)) {
+            this.scoredMembers.put(score, value);
+            return 1;
+        }
+        return 0;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public int getScoredMemberSize() {
+        return this.scoredMembers.size();
     }
 
-    public String getValue() {
-        return value;
+    public Integer getScoredMemberRank(String value) {
+        return getListOfValues().indexOf(value) >= 0 ? getListOfValues().indexOf(value) : null;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public List<String> getScoredMemberInRange(int start, int stop) {
+        if (start > stop || start > (getScoredMemberSize() - 1))
+            return null;
+        if (stop >= getScoredMemberSize())
+            stop = getScoredMemberSize() - 1;
+        if (start < 0)
+            start = getScoredMemberSize() - start;
+        return getListOfValues().subList(start, stop + 1);
     }
 
+    private List<String> getListOfValues() {
+        return scoredMembers.values().stream().map(e -> e.toString()).collect(Collectors.toList());
+    }
 }

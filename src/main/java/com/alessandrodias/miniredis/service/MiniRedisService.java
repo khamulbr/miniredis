@@ -3,20 +3,15 @@ package com.alessandrodias.miniredis.service;
 
 import com.alessandrodias.miniredis.model.MiniRedisData;
 import com.alessandrodias.miniredis.model.MiniRedisDataOrderedSet;
-import com.alessandrodias.miniredis.model.MiniRedisDataSet;
+import com.alessandrodias.miniredis.model.MiniRedisString;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MiniRedisService {
 
-
-    public static final Long NIL = null;
 
     private ConcurrentHashMap<String, MiniRedisData> database = new ConcurrentHashMap();
 
@@ -30,7 +25,7 @@ public class MiniRedisService {
 
 
     public String set(String key, String value) {
-        this.database.put(key, new MiniRedisDataSet(value));
+        this.database.put(key, new MiniRedisString(value));
         return "OK";
     }
 
@@ -39,7 +34,7 @@ public class MiniRedisService {
         if (secondsToExpire < 1)
             throw new RuntimeException("(error) ERR invalid expire time in set");
 
-        this.database.put(key, new MiniRedisDataSet(value, secondsToExpire));
+        this.database.put(key, new MiniRedisString(value, secondsToExpire));
         return "OK";
     }
     
@@ -49,7 +44,7 @@ public class MiniRedisService {
     }
 
     public String get(String key) {
-        MiniRedisDataSet miniRedisData = (MiniRedisDataSet) database.get(key);
+        MiniRedisString miniRedisData = (MiniRedisString) database.get(key);
         if (miniRedisData != null) {
             System.out.println("expiration from db = " + miniRedisData.getExpiration());
             System.out.println("time               = " + getCurrentTime());
@@ -82,8 +77,39 @@ public class MiniRedisService {
         return valueToIncrement;
     }
 
-    public void zadd(String key, Double score, String value) {
-        database.put(key, new MiniRedisDataOrderedSet(score, value));
+    private MiniRedisDataOrderedSet getMiniRedisDataOrderedSetFromDatabaseKey(String key) {
+        return (MiniRedisDataOrderedSet) database.get(key);
     }
 
+    public int zadd(String key, Double score, String value) {
+        MiniRedisDataOrderedSet miniRedisData = getMiniRedisDataOrderedSetFromDatabaseKey(key);
+        if (miniRedisData == null) {
+            miniRedisData = new MiniRedisDataOrderedSet();
+        }
+        int returnValue = miniRedisData.putScoredMember(score, value);
+        if (returnValue == 1)
+            database.put(key, miniRedisData);
+        return returnValue;
+    }
+
+    public int zCard(String key) {
+        MiniRedisDataOrderedSet miniRedisDataOrderedSetFromKey = getMiniRedisDataOrderedSetFromDatabaseKey(key);
+        if (miniRedisDataOrderedSetFromKey != null)
+            return getMiniRedisDataOrderedSetFromDatabaseKey(key).getScoredMemberSize();
+        return 0;
+    }
+
+    public Integer zRank(String key, String value) {
+        MiniRedisDataOrderedSet miniRedisDataOrderedSetFromKey = getMiniRedisDataOrderedSetFromDatabaseKey(key);
+        if (miniRedisDataOrderedSetFromKey != null)
+            return miniRedisDataOrderedSetFromKey.getScoredMemberRank(value);
+        return null;
+    }
+
+    public List<String> zRange(String key, int start, int stop) {
+        MiniRedisDataOrderedSet miniRedisDataOrderedSetFromKey = getMiniRedisDataOrderedSetFromDatabaseKey(key);
+        if (miniRedisDataOrderedSetFromKey != null)
+            return (getMiniRedisDataOrderedSetFromDatabaseKey(key)).getScoredMemberInRange(start, stop);
+        return null;
+    }
 }

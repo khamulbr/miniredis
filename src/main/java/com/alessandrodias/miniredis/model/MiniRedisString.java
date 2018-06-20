@@ -1,17 +1,17 @@
 package com.alessandrodias.miniredis.model;
 
-public class MiniRedisDataSet extends MiniRedisData {
+public class MiniRedisString extends MiniRedisData {
 
     private String value;
 
-    public MiniRedisDataSet(String value) {
+    public MiniRedisString(String value) {
         super();
         this.value = value;
     }
 
-    public MiniRedisDataSet(String value, Integer expiration) {
+    public MiniRedisString(String value, Integer expiration) {
         super(expiration);
-        new MiniRedisDataSet(value);
+        new MiniRedisString(value);
     }
 
     public String getValue() {
