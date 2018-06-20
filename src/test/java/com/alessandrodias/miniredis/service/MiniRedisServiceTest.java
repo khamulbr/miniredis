@@ -1,7 +1,9 @@
-package com.alessandrodias.miniredis.model;
+package com.alessandrodias.miniredis.service;
 
 import com.alessandrodias.miniredis.fixture.MiniRedisServiceFixture;
-import com.alessandrodias.miniredis.service.MiniRedisService;
+import com.alessandrodias.miniredis.model.MiniRedisBaseData;
+import com.alessandrodias.miniredis.model.MiniRedisBaseDataString;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,28 +52,28 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldReturnProperValueWhenAKeyIsGet() {
-        database.put("key", new MiniRedisString("value"));
+        database.put("key", new MiniRedisBaseDataString("value"));
         MiniRedisService miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
         assertEquals("value", miniRedisService.get("key"));
     }
 
     @Test
     public void testShouldReturnNilValueWhenANonExistingKeyIsGet() {
-        assertEquals(MiniRedisData.NIL, miniRedisService.get("key"));
+        Assert.assertEquals(MiniRedisBaseData.NIL, miniRedisService.get("key"));
     }
 
 
     @Test
     public void testShouldDeleteOneKey() {
-        database.put("key", new MiniRedisString("value"));
+        database.put("key", new MiniRedisBaseDataString("value"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
         assertEquals(1, miniRedisService.del("key"));
     }
 
     @Test
     public void testShouldDeleteTwoKeys() {
-        database.put("key", new MiniRedisString("value"));
-        database.put("key1", new MiniRedisString("value1"));
+        database.put("key", new MiniRedisBaseDataString("value"));
+        database.put("key1", new MiniRedisBaseDataString("value1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.del("key", "key1"));
@@ -79,8 +81,8 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldDeleteTwoKeysAndIgnoreOneNonExistentKey() {
-        database.put("key", new MiniRedisString("value"));
-        database.put("key1", new MiniRedisString("value1"));
+        database.put("key", new MiniRedisBaseDataString("value"));
+        database.put("key1", new MiniRedisBaseDataString("value1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.del("key", "key1", "key2"));
@@ -88,7 +90,7 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldIncrementExistingNumericKey(){
-        database.put("key", new MiniRedisString("1"));
+        database.put("key", new MiniRedisBaseDataString("1"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         assertEquals(2, miniRedisService.incr("key"));
@@ -101,7 +103,7 @@ public class MiniRedisServiceTest {
 
     @Test(expected = NumberFormatException.class)
     public void testShouldThrowExceptionWhenIncrOfNonIntKeyIsCalled() {
-        database.put("key", new MiniRedisString("a"));
+        database.put("key", new MiniRedisBaseDataString("a"));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         miniRedisService.incr("key");
@@ -109,7 +111,7 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldCreateAExpirableKeyAndGetValueWithinTime() throws InterruptedException {
-        database.put("key", new MiniRedisString("a", 1));
+        database.put("key", new MiniRedisBaseDataString("a", 1));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         Thread.sleep(500);
@@ -118,11 +120,11 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldCreateAExpirableKeyAndGetNilAsExpireTimeHasPassed() throws InterruptedException {
-        database.put("key", new MiniRedisString("a", 1));
+        database.put("key", new MiniRedisBaseDataString("a", 1));
         miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         Thread.sleep(1500);
-        assertEquals(MiniRedisData.NIL, miniRedisService.get("key"));
+        assertEquals(MiniRedisBaseData.NIL, miniRedisService.get("key"));
     }
 
     @Test(expected = RuntimeException.class)
@@ -185,7 +187,7 @@ public class MiniRedisServiceTest {
     public void testShouldGetNullRankPositionWhenNonExistingMemberIsQueriedFromRank() {
         miniRedisService.zadd("teste", 10.0, "item 2");
         miniRedisService.zadd("teste", 5.0, "item 1");
-        assertEquals(MiniRedisData.NIL, miniRedisService.zRank("teste","item 3"));
+        assertEquals(MiniRedisBaseData.NIL, miniRedisService.zRank("teste","item 3"));
     }
 
     @Test
@@ -272,5 +274,10 @@ public class MiniRedisServiceTest {
         miniRedisService.zadd("teste", 1.0, "item 0");
         List<String> expected = Arrays.asList("item 1", "item 2");
         assertEquals(expected, miniRedisService.zRange("teste",  1, -1));
+    }
+
+    @Test
+    public void testShouldSetValuesForDifferentUsersAndGetProperValues(){
+
     }
 }

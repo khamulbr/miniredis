@@ -1,8 +1,5 @@
 package com.alessandrodias.miniredis.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public enum MiniRedisCommand {
     SET("SET"),
     GET("GET"),
