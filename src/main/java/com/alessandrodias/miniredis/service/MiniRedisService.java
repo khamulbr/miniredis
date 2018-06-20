@@ -47,9 +47,7 @@ public class MiniRedisService {
     public String get(String key) {
         MiniRedisString miniRedisData = (MiniRedisString) database.get(key);
         if (miniRedisData != null) {
-            System.out.println("expiration from db = " + miniRedisData.getExpiration());
-            System.out.println("time               = " + getCurrentTime());
-            if (!miniRedisData.isExpired()) {
+            if (miniRedisData.isValid()) {
                 return miniRedisData.getValue();
             }
         }

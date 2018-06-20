@@ -5,13 +5,12 @@ public class MiniRedisString extends MiniRedisData {
     private String value;
 
     public MiniRedisString(String value) {
-        super();
         this.value = value;
     }
 
     public MiniRedisString(String value, Integer expiration) {
         super(expiration);
-        new MiniRedisString(value);
+        this.value = value;
     }
 
     public String getValue() {

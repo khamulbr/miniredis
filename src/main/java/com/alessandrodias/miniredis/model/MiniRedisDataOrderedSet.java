@@ -28,13 +28,19 @@ public class MiniRedisDataOrderedSet extends MiniRedisData {
     }
 
     public List<String> getScoredMemberInRange(int start, int stop) {
-        if (start > stop || start > (getScoredMemberSize() - 1))
-            return null;
         if (stop >= getScoredMemberSize())
             stop = getScoredMemberSize() - 1;
         if (start < 0)
-            start = getScoredMemberSize() - start;
+            start = getScoredMemberSize() + start;
+        if (stop < 0)
+            stop = getScoredMemberSize() + stop;
+        if (!isRangeValid(start, stop))
+            return null;
         return getListOfValues().subList(start, stop + 1);
+    }
+
+    private boolean isRangeValid(int start, int stop) {
+        return start < stop && start < (getScoredMemberSize() - 1);
     }
 
     private List<String> getListOfValues() {

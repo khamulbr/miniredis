@@ -1,37 +1,37 @@
 package com.alessandrodias.miniredis.model;
 
+import java.time.Instant;
 import java.util.Calendar;
 
 public class MiniRedisData {
 
     public static final Long NIL = null;
 
-    private Long expiration;
+    private Instant expiration;
 
     public MiniRedisData() {
     }
 
     public MiniRedisData(Integer seconds) {
-        this.expiration = calculateExpiration(seconds);
+        this.setExpiration(calculateExpiration(seconds));
     }
 
-    public Long getExpiration() {
+    public Instant getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(Long expiration) {
+    public void setExpiration(Instant expiration) {
         this.expiration = expiration;
     }
 
-    public boolean isExpired(){
-        if (getExpiration() != null)
-            return (Calendar.getInstance().getTimeInMillis() > getExpiration());
-        return false;
+    public boolean isValid(){
+        if (expiration != null) {
+            return (Instant.now().isBefore(expiration));
+        }
+        return true;
     }
 
-    private Long calculateExpiration(Integer seconds) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, seconds);
-        return calendar.getTimeInMillis();
+    private Instant calculateExpiration(Integer seconds) {
+        return Instant.now().plusSeconds(seconds);
     }
 }

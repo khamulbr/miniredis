@@ -109,7 +109,8 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldCreateAExpirableKeyAndGetValueWithinTime() throws InterruptedException {
-        miniRedisService.set("key", "a", 1);
+        database.put("key", new MiniRedisString("a", 1));
+        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         Thread.sleep(500);
         assertEquals("a", miniRedisService.get("key"));
@@ -117,7 +118,8 @@ public class MiniRedisServiceTest {
 
     @Test
     public void testShouldCreateAExpirableKeyAndGetNilAsExpireTimeHasPassed() throws InterruptedException {
-        miniRedisService.set("key", "a", 1);
+        database.put("key", new MiniRedisString("a", 1));
+        miniRedisService = MiniRedisServiceFixture.get().withDatabase(database).build();
 
         Thread.sleep(1500);
         assertEquals(MiniRedisData.NIL, miniRedisService.get("key"));
@@ -247,11 +249,28 @@ public class MiniRedisServiceTest {
     }
 
     @Test
+    public void testShouldGetNoElementsWhenZRangeIsCalledWithStartAboveStopBothNegatives() {
+        miniRedisService.zadd("teste", 10.0, "item 2");
+        miniRedisService.zadd("teste", 5.0, "item 1");
+        miniRedisService.zadd("teste", 1.0, "item 0");
+        assertEquals(null, miniRedisService.zRange("teste", -1, -2));
+    }
+
+    @Test
     public void testShouldGetSomeElementsWhenZRangeIsCalledWithStartAndStopWithNegativeValues() {
         miniRedisService.zadd("teste", 10.0, "item 2");
         miniRedisService.zadd("teste", 5.0, "item 1");
         miniRedisService.zadd("teste", 1.0, "item 0");
         List<String> expected = Arrays.asList("item 1", "item 2");
         assertEquals(expected, miniRedisService.zRange("teste",  -2, -1));
+    }
+
+    @Test
+    public void testShouldGetSomeElementsWhenZRangeIsCalledWithStartWithPositiveAndStopWithNegativeValues() {
+        miniRedisService.zadd("teste", 10.0, "item 2");
+        miniRedisService.zadd("teste", 5.0, "item 1");
+        miniRedisService.zadd("teste", 1.0, "item 0");
+        List<String> expected = Arrays.asList("item 1", "item 2");
+        assertEquals(expected, miniRedisService.zRange("teste",  1, -1));
     }
 }
