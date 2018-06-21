@@ -1,6 +1,6 @@
 package com.alessandrodias.miniredis.controller;
 
-import com.alessandrodias.miniredis.model.MiniRedisDatabase;
+import com.alessandrodias.miniredis.service.MiniRedisDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +51,4 @@ public class MiniRedisController {
     public String dbsize(){
         return miniRedisDatabase.dbSize() + NEW_LINE;
     }
-
 }

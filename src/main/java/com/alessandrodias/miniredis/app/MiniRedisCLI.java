@@ -1,7 +1,7 @@
 package com.alessandrodias.miniredis.app;
 
 import com.alessandrodias.miniredis.model.MiniRedisInstruction;
-import com.alessandrodias.miniredis.model.MiniRedisDatabase;
+import com.alessandrodias.miniredis.service.MiniRedisDatabase;
 
 import java.util.Scanner;
 

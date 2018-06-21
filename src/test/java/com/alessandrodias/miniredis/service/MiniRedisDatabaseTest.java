@@ -1,9 +1,8 @@
-package com.alessandrodias.miniredis.model;
+package com.alessandrodias.miniredis.service;
 
 import com.alessandrodias.miniredis.fixture.MiniRedisServiceFixture;
 import com.alessandrodias.miniredis.model.MiniRedisBaseData;
 import com.alessandrodias.miniredis.model.MiniRedisBaseDataString;
-import com.alessandrodias.miniredis.model.MiniRedisDatabase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +18,6 @@ public class MiniRedisDatabaseTest {
 
     private MiniRedisDatabase miniRedisDatabase;
     private ConcurrentHashMap database = new ConcurrentHashMap();
-    private ConcurrentHashMap databaseExpiration = new ConcurrentHashMap();
     private Calendar calendar;
 
     @Before

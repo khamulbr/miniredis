@@ -1,5 +1,8 @@
-package com.alessandrodias.miniredis.model;
+package com.alessandrodias.miniredis.service;
 
+import com.alessandrodias.miniredis.model.MiniRedisBaseData;
+import com.alessandrodias.miniredis.model.MiniRedisBaseDataOrderedSet;
+import com.alessandrodias.miniredis.model.MiniRedisBaseDataString;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;

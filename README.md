@@ -34,3 +34,34 @@ commands.
 
 This should include some sort of test harness or set of test cases that allows the developer to
 demonstrate the functionality of the implemented commands.
+
+# Setup project on IntelliJ
+Call ./gradlew cleanIdea idea
+
+# Building
+Call ./gradlew clean build
+
+# Running tests
+Call ./gradlew test
+
+# Running Springboot HTTP REST service
+Call ./gradlew bootRun
+
+# URL's for using HTTP REST service
+- sets value to key -                       (PUT)       localhost:8080/miniredis/teste2?value=10
+"OK"
+
+- sets value to key for 2 seconds -         (PUT)       localhost:8080/miniredis/teste1?value=10&expirationMode=EX&expirationValue=2
+"OK"
+
+- returns value of key -                    (GET)       localhost:8080/miniredis/teste2
+"10"
+
+- increments value of key and returns it -  (POST)      localhost:8080/miniredis/teste2
+"11"
+
+- removes key from database -               (DELETE)    localhost:8080/miniredis/teste2
+"11"
+
+- returns size of database -                (GET)       localhost:8080/miniredis/dbsize
+"1"

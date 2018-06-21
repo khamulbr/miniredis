@@ -1,6 +1,6 @@
 package com.alessandrodias.miniredis.fixture;
 
-import com.alessandrodias.miniredis.model.MiniRedisDatabase;
+import com.alessandrodias.miniredis.service.MiniRedisDatabase;
 
 import java.util.concurrent.ConcurrentHashMap;
 

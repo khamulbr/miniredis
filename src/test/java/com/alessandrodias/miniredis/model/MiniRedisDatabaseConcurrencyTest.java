@@ -1,6 +1,6 @@
 package com.alessandrodias.miniredis.model;
 
-import com.alessandrodias.miniredis.model.MiniRedisDatabase;
+import com.alessandrodias.miniredis.service.MiniRedisDatabase;
 import net.jodah.concurrentunit.ConcurrentTestCase;
 import org.junit.Test;
 
