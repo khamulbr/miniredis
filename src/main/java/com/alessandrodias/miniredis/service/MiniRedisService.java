@@ -4,7 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MiniRedisService {
 
-
     private ConcurrentHashMap<String, ConcurrentHashMap> userDatabases = new ConcurrentHashMap<>();
 
     public synchronized ConcurrentHashMap getUserDatabaseByUser(String user){

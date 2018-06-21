@@ -1,11 +1,15 @@
 package com.alessandrodias.miniredis.model;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+@Component
+@SessionScope
 public class MiniRedisDatabase {
 
     private ConcurrentHashMap<String, MiniRedisBaseData> database = new ConcurrentHashMap();
