@@ -65,3 +65,6 @@ Call ./gradlew bootRun
 
 - returns size of database -                (GET)       localhost:8080/miniredis/dbsize
 "1"
+
+# Observations
+As this version doesn't have any authentication mechanism, the session is being created based on the client, i.e: curl commands will always create a new session, so it's advised to use some REST client (Postman, ARC, etc.) for properly accessing the API.
