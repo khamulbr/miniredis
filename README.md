@@ -48,23 +48,17 @@ Call ./gradlew test
 Call ./gradlew bootRun
 
 # URL's for using HTTP REST service
-- sets value to key -                       (PUT)       localhost:8080/miniredis/teste2?value=10
-"OK"
+sets value to key -                       (PUT)       localhost:8080/miniredis/teste2?value=10
 
-- sets value to key for 2 seconds -         (PUT)       localhost:8080/miniredis/teste1?value=10&expirationMode=EX&expirationValue=2
-"OK"
+sets value to key for 2 seconds -         (PUT)       localhost:8080/miniredis/teste1?value=10&expirationMode=EX&expirationValue=2  
 
-- returns value of key -                    (GET)       localhost:8080/miniredis/teste2
-"10"
+returns value of key -                    (GET)       localhost:8080/miniredis/teste2
 
-- increments value of key and returns it -  (POST)      localhost:8080/miniredis/teste2
-"11"
+increments value of key and returns it -  (POST)      localhost:8080/miniredis/teste2
 
-- removes key from database -               (DELETE)    localhost:8080/miniredis/teste2
-"11"
+removes key from database -               (DELETE)    localhost:8080/miniredis/teste2
 
-- returns size of database -                (GET)       localhost:8080/miniredis/dbsize
-"1"
+returns size of database -                (GET)       localhost:8080/miniredis/dbsize
 
 # Observations
 As this version doesn't have any authentication mechanism, the session is being created based on the client, i.e: curl commands will always create a new session, so it's advised to use some REST client (Postman, ARC, etc.) for properly accessing the API.
